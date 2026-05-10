@@ -1,8 +1,56 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-4">
+    <h1 class="display-4">personapi</h1>
+    <p class="text-muted">Selecciona una sección para comenzar</p>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+    <div class="col">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Personas</h5>
+                <p class="card-text text-muted">Gestionar personas registradas</p>
+                <a asp-controller="Persona" asp-action="Index" class="btn btn-primary">Ir a Personas</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Profesiones</h5>
+                <p class="card-text text-muted">Gestionar profesiones disponibles</p>
+                <a asp-controller="Profesion" asp-action="Index" class="btn btn-primary">Ir a Profesiones</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Teléfonos</h5>
+                <p class="card-text text-muted">Gestionar teléfonos registrados</p>
+                <a asp-controller="Telefono" asp-action="Index" class="btn btn-primary">Ir a Teléfonos</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Estudios</h5>
+                <p class="card-text text-muted">Gestionar estudios de personas</p>
+                <a asp-controller="Estudio" asp-action="Index" class="btn btn-primary">Ir a Estudios</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <h5 class="card-title">API / Swagger</h5>
+                <p class="card-text text-muted">Explorar y probar los endpoints REST</p>
+                <a href="/swagger" class="btn btn-outline-secondary">Abrir Swagger</a>
+            </div>
+        </div>
+    </div>
 </div>
