@@ -1,0 +1,25 @@
+@model personapi_dotnet.Models.Entities.Telefono
+@{ ViewData["Title"] = "Editar Teléfono"; }
+
+<h2>Editar Teléfono</h2>
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Num" />
+    <div class="mb-3">
+        <label asp-for="Num" class="form-label"></label>
+        <input asp-for="Num" class="form-control" readonly />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Oper" class="form-label"></label>
+        <input asp-for="Oper" class="form-control" />
+        <span asp-validation-for="Oper" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Duenio" class="form-label"></label>
+        <input asp-for="Duenio" class="form-control" />
+        <span asp-validation-for="Duenio" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+@section Scripts { @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); } }

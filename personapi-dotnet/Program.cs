@@ -15,6 +15,9 @@ builder.Services.AddScoped<IProfesionRepository, ProfesionRepository>();
 builder.Services.AddScoped<ITelefonoRepository, TelefonoRepository>();
 builder.Services.AddScoped<IEstudioRepository, EstudioRepository>();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,11 +25,16 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.MapControllers();
 
 app.MapControllerRoute(
     name: "default",
