@@ -16,53 +16,11 @@ Monolithic ASP.NET Core MVC application implementing full CRUD over a `persona_d
 
 ## 1. Database setup
 
-### Create the database
-
-Open SSMS or sqlcmd and run:
-
-```sql
-CREATE DATABASE persona_db;
-ALTER AUTHORIZATION ON DATABASE::persona_db TO sa;
-```
-
-### Run the DDL script
-
-Execute the script at `db/ddl.sql` to create all tables (or run the statements below):
-
-```sql
-CREATE TABLE profesion (
-    id    INT          NOT NULL,
-    nom   VARCHAR(90),
-    des   VARCHAR(MAX),
-    CONSTRAINT PK_profesion PRIMARY KEY (id)
-);
-CREATE TABLE persona (
-    cc       INT          NOT NULL,
-    nombre   VARCHAR(45),
-    apellido VARCHAR(45),
-    genero   CHAR(1)      CHECK (genero IN ('M', 'F')),
-    edad     INT,
-    CONSTRAINT PK_persona PRIMARY KEY (cc)
-);
-CREATE TABLE estudios (
-    id_prof  INT          NOT NULL,
-    cc_per   INT          NOT NULL,
-    fecha    DATE,
-    univer   VARCHAR(50),
-    CONSTRAINT PK_estudios        PRIMARY KEY (id_prof, cc_per),
-    CONSTRAINT FK_estudios_prof   FOREIGN KEY (id_prof) REFERENCES profesion(id),
-    CONSTRAINT FK_estudios_per    FOREIGN KEY (cc_per)  REFERENCES persona(cc)
-);
-CREATE TABLE telefono (
-    num    VARCHAR(15)  NOT NULL,
-    oper   VARCHAR(45),
-    duenio INT,
-    CONSTRAINT PK_telefono        PRIMARY KEY (num),
-    CONSTRAINT FK_telefono_per    FOREIGN KEY (duenio)  REFERENCES persona(cc)
-);
-```
+This step involves installing SQL Server, creating the database, and running the DDL script to create all tables. It is a manual process with several steps — follow the detailed instructions in the lab documentation (section **Procedimiento**, steps 3–5), which covers installation, instance configuration, and schema creation.
 
 ### (Optional) Load sample data
+
+In case you want to create values using a DML script, here is an example of sample data you can insert in the tables created in the prior step.
 
 ```sql
 INSERT INTO profesion VALUES (1, 'Ingeniería de Sistemas', 'Carrera de tecnología');
