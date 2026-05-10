@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using personapi_dotnet.Interfaces;
 using personapi_dotnet.Models.Entities;
 
 namespace personapi_dotnet.Controllers;
 
-public class PersonaController : Controller
+public class PersonaController : BaseController
 {
     private readonly IPersonaRepository _repo;
 
@@ -24,8 +25,16 @@ public class PersonaController : Controller
     public IActionResult Create(Persona persona)
     {
         if (!ModelState.IsValid) return View(persona);
-        _repo.Create(persona);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Create(persona);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(persona);
+        }
     }
 
     public IActionResult Edit(int cc)
@@ -39,8 +48,16 @@ public class PersonaController : Controller
     {
         if (cc != persona.Cc) return BadRequest();
         if (!ModelState.IsValid) return View(persona);
-        _repo.Update(persona);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Update(persona);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(persona);
+        }
     }
 
     public IActionResult Delete(int cc)
@@ -52,7 +69,17 @@ public class PersonaController : Controller
     [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int cc)
     {
-        _repo.Delete(cc);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Delete(cc);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            var persona = _repo.GetById(cc);
+            if (persona == null) return NotFound();
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(persona);
+        }
     }
 }

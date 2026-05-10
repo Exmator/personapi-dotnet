@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using personapi_dotnet.Interfaces;
 using personapi_dotnet.Models.Entities;
 
 namespace personapi_dotnet.Controllers;
 
-public class TelefonoController : Controller
+public class TelefonoController : BaseController
 {
     private readonly ITelefonoRepository _repo;
 
@@ -24,8 +25,16 @@ public class TelefonoController : Controller
     public IActionResult Create(Telefono telefono)
     {
         if (!ModelState.IsValid) return View(telefono);
-        _repo.Create(telefono);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Create(telefono);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(telefono);
+        }
     }
 
     public IActionResult Edit(string num)
@@ -39,8 +48,16 @@ public class TelefonoController : Controller
     {
         if (num != telefono.Num) return BadRequest();
         if (!ModelState.IsValid) return View(telefono);
-        _repo.Update(telefono);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Update(telefono);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(telefono);
+        }
     }
 
     public IActionResult Delete(string num)
@@ -52,7 +69,17 @@ public class TelefonoController : Controller
     [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(string num)
     {
-        _repo.Delete(num);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Delete(num);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            var telefono = _repo.GetById(num);
+            if (telefono == null) return NotFound();
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(telefono);
+        }
     }
 }

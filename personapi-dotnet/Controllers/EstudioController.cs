@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using personapi_dotnet.Interfaces;
 using personapi_dotnet.Models.Entities;
 
 namespace personapi_dotnet.Controllers;
 
-public class EstudioController : Controller
+public class EstudioController : BaseController
 {
     private readonly IEstudioRepository _repo;
 
@@ -24,8 +25,16 @@ public class EstudioController : Controller
     public IActionResult Create(Estudio estudio)
     {
         if (!ModelState.IsValid) return View(estudio);
-        _repo.Create(estudio);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Create(estudio);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(estudio);
+        }
     }
 
     public IActionResult Edit(int idProf, int ccPer)
@@ -39,8 +48,16 @@ public class EstudioController : Controller
     {
         if (idProf != estudio.IdProf || ccPer != estudio.CcPer) return BadRequest();
         if (!ModelState.IsValid) return View(estudio);
-        _repo.Update(estudio);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Update(estudio);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(estudio);
+        }
     }
 
     public IActionResult Delete(int idProf, int ccPer)
@@ -52,7 +69,17 @@ public class EstudioController : Controller
     [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int idProf, int ccPer)
     {
-        _repo.Delete(idProf, ccPer);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Delete(idProf, ccPer);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            var estudio = _repo.GetById(idProf, ccPer);
+            if (estudio == null) return NotFound();
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(estudio);
+        }
     }
 }

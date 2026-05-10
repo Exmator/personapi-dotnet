@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using personapi_dotnet.Interfaces;
 using personapi_dotnet.Models.Entities;
 
 namespace personapi_dotnet.Controllers;
 
-public class ProfesionController : Controller
+public class ProfesionController : BaseController
 {
     private readonly IProfesionRepository _repo;
 
@@ -24,8 +25,16 @@ public class ProfesionController : Controller
     public IActionResult Create(Profesion profesion)
     {
         if (!ModelState.IsValid) return View(profesion);
-        _repo.Create(profesion);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Create(profesion);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(profesion);
+        }
     }
 
     public IActionResult Edit(int id)
@@ -39,8 +48,16 @@ public class ProfesionController : Controller
     {
         if (id != profesion.Id) return BadRequest();
         if (!ModelState.IsValid) return View(profesion);
-        _repo.Update(profesion);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Update(profesion);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(profesion);
+        }
     }
 
     public IActionResult Delete(int id)
@@ -52,7 +69,17 @@ public class ProfesionController : Controller
     [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int id)
     {
-        _repo.Delete(id);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            _repo.Delete(id);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException ex)
+        {
+            var profesion = _repo.GetById(id);
+            if (profesion == null) return NotFound();
+            ModelState.AddModelError("", DbErrorMessage(ex));
+            return View(profesion);
+        }
     }
 }
