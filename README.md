@@ -259,21 +259,64 @@ dotnet build
 ## Project structure
 
 ```
-personapi-dotnet/
-├── Controllers/
-│   ├── Api/                  ← REST controllers (ControllerBase)
-│   │   ├── PersonaApiController.cs
-│   │   ├── ProfesionApiController.cs
-│   │   ├── TelefonoApiController.cs
-│   │   └── EstudioApiController.cs
-│   ├── PersonaController.cs  ← MVC controllers (Controller + Views)
-│   ├── ProfesionController.cs
-│   ├── TelefonoController.cs
-│   └── EstudioController.cs
-├── Interfaces/               ← Repository contracts (DAO)
-├── Repositories/             ← EF Core implementations
-├── Models/
-│   └── Entities/             ← Scaffolded EF Core entities + DbContext
-├── Views/                    ← Razor views (5 per entity)
-└── appsettings.json          ← Connection string
+personapi-dotnet/             ← repo root
+├── docker-compose.yml
+├── personapi-dotnet.slnx
+├── db/
+│   └── init.sql              ← DDL run by SQL Server on first start
+├── docker/
+│   └── sqlserver/
+│       ├── Dockerfile
+│       └── entrypoint.sh
+└── personapi-dotnet/         ← ASP.NET Core project
+    ├── personapi-dotnet.csproj
+    ├── Program.cs
+    ├── Dockerfile
+    ├── appsettings.json      ← connection string lives here
+    ├── appsettings.Development.json
+    ├── Controllers/
+    │   ├── Api/              ← REST controllers (ControllerBase)
+    │   │   ├── PersonaApiController.cs
+    │   │   ├── ProfesionApiController.cs
+    │   │   ├── TelefonoApiController.cs
+    │   │   └── EstudioApiController.cs
+    │   ├── BaseController.cs
+    │   ├── HomeController.cs
+    │   ├── PersonaController.cs   ← MVC controllers (Controller + Views)
+    │   ├── ProfesionController.cs
+    │   ├── TelefonoController.cs
+    │   └── EstudioController.cs
+    ├── Interfaces/           ← Repository contracts (DAO)
+    │   ├── IPersonaRepository.cs
+    │   ├── IProfesionRepository.cs
+    │   ├── ITelefonoRepository.cs
+    │   └── IEstudioRepository.cs
+    ├── Repositories/         ← EF Core implementations
+    │   ├── PersonaRepository.cs
+    │   ├── ProfesionRepository.cs
+    │   ├── TelefonoRepository.cs
+    │   └── EstudioRepository.cs
+    ├── Models/
+    │   ├── ErrorViewModel.cs
+    │   └── Entities/         ← Scaffolded EF Core entities + DbContext
+    │       ├── PersonaDbContext.cs
+    │       ├── Persona.cs
+    │       ├── Profesion.cs
+    │       ├── Telefono.cs
+    │       ├── Estudio.cs
+    │       └── EstudioMetadata.cs
+    ├── Views/                ← Razor views (5 per entity + Shared layout)
+    │   ├── _ViewImports.cshtml
+    │   ├── _ViewStart.cshtml
+    │   ├── Home/
+    │   ├── Persona/
+    │   ├── Profesion/
+    │   ├── Telefono/
+    │   ├── Estudio/
+    │   └── Shared/
+    │       └── _Layout.cshtml
+    └── wwwroot/              ← static assets
+        ├── css/
+        ├── js/
+        └── lib/              ← Bootstrap, jQuery, validation
 ```
