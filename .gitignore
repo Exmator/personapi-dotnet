@@ -1,0 +1,23 @@
+# Archivos locales
+Documentacion/
+CLAUDE.md
+
+# Archivos de Visual Studio
+.vs/
+*.user
+*.suo
+*.pdb
+
+# Carpetas de compilación
+bin/
+obj/
+
+# Secretos y configuración local
+appsettings.Development.json
+
+# Paquetes NuGet locales
+*.nupkg
+packages/
+
+# Archivos de publicación
+publish/
