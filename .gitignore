@@ -14,6 +14,7 @@ obj/
 
 # Secretos y configuración local
 appsettings.Development.json
+.env
 
 # Paquetes NuGet locales
 *.nupkg

@@ -4,7 +4,82 @@ Monolithic ASP.NET Core MVC application implementing full CRUD over a `persona_d
 
 ---
 
-## Prerequisites
+## Running options
+
+| Option | When to use |
+|--------|-------------|
+| [Docker Compose + Cloudflare Tunnel](#docker-compose--cloudflare-tunnel) | Quickest way to get a public URL with zero config |
+| [Local development](#local-development) | Iterating on code with a local SQL Server instance |
+
+---
+
+## Docker Compose + Cloudflare Tunnel
+
+The entire stack (SQL Server, app, and Cloudflare Tunnel) runs with a single command. No Cloudflare account or domain is needed — [TryCloudflare](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/trycloudflare/) generates a temporary public `*.trycloudflare.com` URL automatically.
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running (enable WSL 2 backend on Windows)
+
+### Steps
+
+**1. Set the SA password**
+
+Copy `.env.example` to `.env` and choose a strong password (min 8 chars, upper, lower, digit, symbol):
+
+```powershell
+copy .env.example .env
+```
+
+Edit `.env`:
+```
+SA_PASSWORD=YourStr0ng!Pass
+```
+
+**2. Start everything**
+
+```powershell
+docker compose up --build
+```
+
+Docker will:
+1. Build the SQL Server image and run `db/init.sql` to create `persona_db` with all tables
+2. Build the app image and start it on port 8080
+3. Start cloudflared and open a tunnel to the app
+
+**3. Get the public URL**
+
+In a second terminal, watch the cloudflared logs:
+
+```powershell
+docker compose logs -f cloudflared
+```
+
+Look for a line like:
+
+```
+Your quick Tunnel has been created! Visit it at https://xxxx-xxxx.trycloudflare.com
+```
+
+Open that URL in your browser. The app is live with:
+- **Web UI:** `https://xxxx.trycloudflare.com/Persona` (and other entities)
+- **Swagger:** `https://xxxx.trycloudflare.com/swagger`
+
+> **Note:** The URL changes every time `docker compose up` is run, since TryCloudflare generates a new one each session.
+
+**4. Tear down**
+
+```powershell
+docker compose down -v
+```
+
+The `-v` flag removes the SQL Server data volume. Omit it to keep the database across restarts.
+
+---
+
+## Local development
+
+### Prerequisites
 
 | Tool | Version |
 |------|---------|
@@ -52,7 +127,7 @@ If your instance has a different name (e.g., just `localhost` without `\SQLEXPRE
 
 ---
 
-## 3. Run the application
+## 3. Run the application (local)
 
 ```powershell
 cd personapi-dotnet
